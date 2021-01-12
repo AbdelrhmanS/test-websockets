@@ -69,7 +69,8 @@ export class DocumentComponent implements OnInit, OnDestroy {
     }));
   }
   addBid() {
-    this.auctionService.editDocument(this.form.value);
+    this.auctionService
+      .addBid({auctionId: this.auction.id, partnerId: this.currentPartner, bid: this.form.value.partners[this.currentPartner].bids.pop()});
     this.auctionService.getDocument(this.auction.id);
   }
 }

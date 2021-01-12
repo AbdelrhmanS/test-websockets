@@ -18,6 +18,12 @@ io.on('connection', socket => {
         socket.emit('auction', auctions[auctionId]);
     });
 
+    socket.on('getAuction', auctionId => {
+        console.log('getAuction', auctionId);
+        safeJoin(auctionId);
+        socket.emit('auction', auctions[auctionId]);
+    });
+
     socket.on('addAuction', auction => {
         console.log('addAuction', auction);
         auctions[auction.id] = auction;
@@ -31,6 +37,18 @@ io.on('connection', socket => {
         console.log('editAuction', auction);
         auctions[auction.id] = auction;
         socket.to(auction.id).emit('auction', auction);
+    });
+
+    socket.on('addBid', bidDetails => {
+        const auction = auctions[bidDetails.auctionId];
+        console.log('addBid', bidDetails, auction);
+        auction.totalBids += 1;
+        if (!auction.partners[bidDetails.partnerId]) {
+            auction.partners[bidDetails.partnerId] = {bids: []}
+        }
+        auction.partners[bidDetails.partnerId].bids.push(bidDetails.bid);
+        auctions[bidDetails.auctionId] = auction;
+        socket.to(bidDetails.auctionId).emit('auction', auction);
     });
 
     io.emit('auctions', Object.keys(auctions));

@@ -30,6 +30,10 @@ export class DocumentService {
     this.socket.emit('editAuction', auction);
   }
 
+  addBid(bidDetails: any) {
+    this.socket.emit('addBid', bidDetails);
+  }
+
   docId() {
     let text = '';
     const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
