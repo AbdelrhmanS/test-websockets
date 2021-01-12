@@ -1,0 +1,46 @@
+
+<form [formGroup]="form" *ngIf="form" class="auction">
+  <h3>{{form.get('id').value}}</h3>
+  <input type="radio" id="pType" name="userType" [(ngModel)]="currentType" value="p" [ngModelOptions]="{standalone: true}">
+  <label for="pType">Partner</label>
+
+  <input type="radio" id="cType" name="userType" [(ngModel)]="currentType" value="c" [ngModelOptions]="{standalone: true}">
+  <label for="cType">Customer</label>
+
+  <div *ngIf="currentType === 'p'">
+    <input type="radio" id="partnerChoice1" (change)="selectPartner()"
+           name="partner" [(ngModel)]="currentPartner" [ngModelOptions]="{standalone: true}" value="a">
+    <label for="partnerChoice1">A</label>
+
+    <input type="radio" id="partnerChoice2"  (change)="selectPartner()"
+           name="partner" [(ngModel)]="currentPartner" [ngModelOptions]="{standalone: true}" value="b">
+    <label for="partnerChoice2">B</label>
+
+    <input type="radio" id="partnerChoice3" (change)="selectPartner()"
+           name="partner" [(ngModel)]="currentPartner" [ngModelOptions]="{standalone: true}" value="c">
+    <label for="partnerChoice3">C</label>
+  </div>
+  <div formGroupName="partners" *ngIf="currentType === 'p' && currentPartner">
+    <div [formGroupName]="currentPartner">
+      <div *ngFor="let bid of form.get('partners')?.get(currentPartner)?.get('bids').controls; let j = index" formArrayName="bids">
+        <div [formGroupName]="j">
+          <input type="number" formControlName="price">
+          <button (click)="addBid()">Add bid</button>
+        </div>
+      </div>
+      <button (click)="addNewBid()">Add New bid</button>
+    </div>
+  </div>
+  <div *ngIf="currentType === 'c'">
+    <div *ngFor="let partner of partners">
+      <div *ngFor="let bid of auction.partners[partner]?.bids">
+        {{partner}}: {{bid.price}}
+      </div>
+    </div>
+  </div>
+</form>
+
+{{auction | json}}
+
+
+<!--<textareauctiondel)]='document.doc' (keyup)='editDoc()' placeholder='Start typing...'></textarea>-->
